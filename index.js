@@ -33,8 +33,6 @@ const authorizationMiddleware = (req, res, next) => {
 const facebookAuthentication = passport.authenticate('facebook')
 const facebookAuthenticationCallback = passport.authenticate('facebook', {
     failureRedirect: '/login'
-}, (req, res) => {
-    res.redirect('/')
 })
 
 app.use(cookieSession({
@@ -62,7 +60,9 @@ app.get('/login', (req, res) => {
 
 app.get('/auth/facebook', facebookAuthentication)
 
-app.get('/auth/facebook/callback', facebookAuthenticationCallback)
+app.get('/auth/facebook/callback', facebookAuthenticationCallback, (req, res) => {
+    res.redirect('/')
+})
 
 app.get('/logout', authorizationMiddleware, (req, res) => {
     req.session = null
