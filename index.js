@@ -30,10 +30,6 @@ const authorizationMiddleware = (req, res, next) => {
         res.redirect("/login")
     }
 }
-const facebookAuthentication = passport.authenticate('facebook')
-const facebookAuthenticationCallback = passport.authenticate('facebook', {
-    failureRedirect: '/login'
-})
 
 app.use(cookieSession({
     maxAge: 90 * 24 * 60 * 60 * 1000,
@@ -58,9 +54,11 @@ app.get('/login', (req, res) => {
     res.render('login')
 })
 
-app.get('/auth/facebook', facebookAuthentication)
+app.get('/auth/facebook', passport.authenticate('facebook'))
 
-app.get('/auth/facebook/callback', facebookAuthenticationCallback, (req, res) => {
+app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+    failureRedirect: '/login'
+}), (req, res) => {
     res.redirect('/')
 })
 
