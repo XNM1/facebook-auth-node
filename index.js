@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const hbs = require('express-hbs')
-//const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session')
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
 
@@ -35,13 +35,13 @@ const facebookAuthenticationCallback = passport.authenticate('facebook', {
     failureRedirect: '/login'
 })
 
-// app.use(cookieSession({
-//     maxAge: 90 * 24 * 60 * 60 * 1000,
-//     keys: [process.env.SESSION_KEY]
-// }))
+app.use(cookieSession({
+    maxAge: 90 * 24 * 60 * 60 * 1000,
+    keys: [process.env.SESSION_KEY]
+}))
 
 app.use(passport.initialize())
-//app.use(passport.session())
+app.use(passport.session())
 
 app.engine('handlebars', hbs.express4())
 app.set('view engine', 'handlebars')
