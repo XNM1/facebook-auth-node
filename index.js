@@ -15,6 +15,14 @@ passport.use(new FacebookStrategy({
     }
 ))
 
+passport.serializeUser(function (user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function (obj, done) {
+    done(null, obj);
+});
+
 const authorizationMiddleware = (req, res, next) => {
     if (req.isAuthenticated()) {
         next()
@@ -59,6 +67,7 @@ app.get('/auth/facebook/callback', facebookAuthenticationCallback)
 
 app.get('/logout', authorizationMiddleware, (req, res) => {
     req.logout()
+    res.redirect('/login')
 })
 
 app.listen(process.env.PORT, function () {
