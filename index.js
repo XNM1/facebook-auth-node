@@ -5,6 +5,14 @@ const cookieSession = require('cookie-session')
 const passport = require('passport')
 const FacebookStrategy = require('passport-facebook').Strategy
 
+passport.serializeUser(function (user, done) {
+    done(null, user)
+})
+
+passport.deserializeUser(function (obj, done) {
+    done(null, obj)
+})
+
 passport.use(new FacebookStrategy({
         clientID: process.env.FACEBOOK_APP_ID,
         clientSecret: process.env.FACEBOOK_APP_SECRET,
@@ -15,14 +23,6 @@ passport.use(new FacebookStrategy({
     }
 ))
 
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
-
-passport.deserializeUser(function (obj, done) {
-    done(null, obj);
-});
-
 const authorizationMiddleware = (req, res, next) => {
     if (req.isAuthenticated()) {
         next()
@@ -32,7 +32,6 @@ const authorizationMiddleware = (req, res, next) => {
 }
 const facebookAuthentication = passport.authenticate('facebook')
 const facebookAuthenticationCallback = passport.authenticate('facebook', {
-    successRedirect: '/',
     failureRedirect: '/login'
 }, (req, res) => {
     res.redirect('/')
@@ -66,6 +65,7 @@ app.get('/auth/facebook', facebookAuthentication)
 app.get('/auth/facebook/callback', facebookAuthenticationCallback)
 
 app.get('/logout', authorizationMiddleware, (req, res) => {
+    req.session = null
     req.logout()
     res.redirect('/login')
 })
